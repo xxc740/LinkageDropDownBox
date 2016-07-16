@@ -1,0 +1,50 @@
+﻿@using DropDownBoxLinkage.Models
+@{
+    ViewBag.Title = "Index";
+    List<Province> provincelist = ViewBag.ListProvince as List<Province>;
+}
+
+<h2>ProvinceIndex</h2>
+
+<label>省份：</label>
+<select id="province">
+    @foreach (var item in provincelist)
+    {
+        <option value="@item.ProvinceID">@item.ProvinceName</option>
+    }
+</select>
+<br/>
+<hr/>
+
+<label>城市：</label>
+<select id="City">
+    <script src="~/scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#province").change(function () {
+                $("#City").empty();
+                var provinceID = $("#province").val();
+                var city = $("#City");
+
+                debugger;
+
+                $.ajax({
+                    url: "/Province/GetAllCityByProvinceID/" + provinceID,
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function(result) {
+                        var myHtml = "";
+                        $.each(result, function(i, data) {
+                            myHtml += "<option value=" + data.CityID + ">" + data.CityName + "</option>";
+                        });
+                        city.append(myHtml);
+                    },
+                    error: function(result) {
+                        alert(result.responseText);
+                    }
+                });
+            });
+        })
+    </script>
+</select>
